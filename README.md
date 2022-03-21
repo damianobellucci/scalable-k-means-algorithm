@@ -1,12 +1,14 @@
-# Introduzione
+# Scalable K-means algorithm 
 
-L'obiettivo di questo progetto è studiare è studiare l'efficacia dell'algoritmo K-means per problemi di transport mode detection e human activity recognition, su dataset fatti da dati provenienti da sensori di smartphone.
+L'obiettivo di questo progetto è studiare è studiare l'efficacia dell'algoritmo K-means implementato per essere eseguito su risorse scalabili, per problemi di transport mode detection e human activity recognition, su dataset fatti da dati provenienti da sensori di smartphone. 
+In particolare, si è cercato di capire se a partire da questi dati è possibile fare clusterizzazione per individuare i cluster di dati relativi ai tipi di trasporto oppure alle attività umane.
+Possibili risvolti di questo studio possono essere il riconoscimento di tipi diversi modalità di trasporto/attività umane a partire da dati di sensori, senza però conoscerne la denominazione. 
 
-Lo studio è stato svolto adottando tecniche di analisi dei dati scalabili, tramite Spark, una libreria che permette di eseguire computazione parallela scrivendo codice sequenziale, con relativa gestione delle risorse di calcolo. Infatti lo stesso codice è stato mandado in esecuzione su diverse risorse di calcolo, dalla macchina locale ai cluster con più nodi di calcolo del servizio di cloud computing Google Cloud Platform.
+Lo studio è stato svolto adottando tecniche di analisi dei dati scalabili, tramite Spark, una libreria che permette di eseguire computazione parallela scrivendo codice sequenziale, con relativa gestione delle risorse di calcolo. Infatti lo stesso codice è stato mandado in esecuzione su diverse risorse di calcolo, dalla macchina locale ai cluster con più nodi di calcolo del servizio di cloud computing Google Cloud Platform. 
+L'esecuzione su risorse scalabili permette di capire se lo studio può essere effettuato, anche in futuro con diversi dataset, più efficacamente avendo a disposizione più capacità di calcolo.
 
 Il linguaggio di programmazione utilizzato è Scala, un linguaggio tipato staticamente la cui compilazione del codice produce Java Bytecode eseguibile sulla Java Virtual Machine. Supporta la programmazione object oriented e la programmazione funzionale.
 
-In questo progetto è stato implementato l'algoritmo di clusterizzazione K-means per dataset con numero arbitrario di features.
 
 ## Punti chiave del progetto
 <ul>
@@ -16,10 +18,19 @@ In questo progetto è stato implementato l'algoritmo di clusterizzazione K-means
   <li> Valutazione delle performance dell'esecuzione del codice in termini di tempo su diverse configurazioni di risorse, dal locale a cluster nel cloud con cluster con 1,2,4 nodi.
 </ul>
 
+## Dataset utilizzati
+I dataset utilizzati in questo progetto sono:
+<ul>
+  <li><a href="google.it">Transport mode detection</a>: questo dataset presenta circa 6000 samples con 64 features, con riferimento a 5 modalità di trasporto (Still, Car, Walking, Bus, Train).
+  <li><a href="https://www.kaggle.com/datasets/uciml/human-activity-recognition-with-smartphones">Human activity recognition</a>: questo dataset presenta samples con 561 features, con riferimento a 6 attività umane (walking, walking upstairs, walking downstairs, sitting, standing, laying).
+</li>
+</ul>
+
+
 ## Riassunto dei risultati
  
 
-### Esecuzione
+## Esecuzione
 
 Requisiti:
 <ul>
