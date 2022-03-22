@@ -6,7 +6,7 @@ import scala.collection.mutable.HashMap
 object Kmeans extends Serializable {
 
   val epsilon = 0.0001
-  val numK = 3
+  val numK = 20
   var numIterations = 0
 
   def distance(p1: Array[Double], p2: Array[Double]) =
@@ -45,8 +45,9 @@ object Kmeans extends Serializable {
 
     val dataset_path = args(0)
     val output_path = args(1)
+    val n_threads = args(2)
 
-    val conf = new SparkConf().setAppName("KMeans").setMaster("local[*]")
+    val conf = new SparkConf().setAppName("KMeans").setMaster("local["+n_threads+"]")
     val sc = new SparkContext(conf)
 
     val input = sc.textFile(dataset_path)
@@ -57,7 +58,7 @@ object Kmeans extends Serializable {
         .map(_.toDouble)
     })
 
-
+    val tt0 = System.nanoTime()
 
     val result =
       (2 to numK).map(num_k => {
@@ -66,7 +67,7 @@ object Kmeans extends Serializable {
 
         var centroids =
           ((0 until num_k) zip
-            sparkPoints.takeSample(false, num_k)).
+            sparkPoints.takeSample(false, num_k, seed = 42)).
             toArray
 
         var finished = false
@@ -99,6 +100,7 @@ object Kmeans extends Serializable {
         })
 
         //parallel computation for getting list of wcss for each cluster. list[(id_cluster,wcss)]
+
         val wcss_list =
           pairs
             .map(pair=>{
@@ -119,9 +121,12 @@ object Kmeans extends Serializable {
 
         //return (num_k, mean_wcss, time_execution)
         (num_k, wcss_list.map(_._2).sum/num_k,numIterations,(System.nanoTime() - t0) / 1000000000)
-      })
+      }).toList
 
     sc.parallelize(result).saveAsTextFile(output_path)
 
+    val t1 = ((System.nanoTime() - tt0) / 1000000000)
+
+    println(t1)
   }
 }

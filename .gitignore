@@ -5,3 +5,8 @@
 dataset
 results
 .idea
+data-processing/post-processing/input/*
+data-processing/post-processing/output/*
+data-processing/pre-processing/input/*
+data-processing/pre-processing/output/*
+notes
