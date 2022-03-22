@@ -44,7 +44,41 @@ Requisiti:
 <ul>
   <li>Scala 2.12</li>
     <li>Spark 3.1.2</li>
+  <li>Java 8 SDK </li>
   <li>Python 3.8.2</li>
 </ul>
 
+L'esecuzione del progetto si divide in diversi step:
+<ol>
+  <li>preparazione dei dataset</li>
+  I dataset devono subire la fase di pre-processing per essere pronti per la fase di input al K-means. Eseguire quindi lo script "preprocessing.py" nella cartella "data-processing". Questo creerà due file file csv, "dataset1.csv" e "dataset2.csv" nella cartella output/preprocessing, che sarannò i file che può prendere in input il K-means (uno alla volta).
+  <li>preparazione del file .jar</li>
+  l'implementazione in scala del K-means deve essere impacchattata in un file .jar, questo lo si fa digitando il comando "package" dalla shell di scala build tools, posizionandosi sulla cartella del progetto. Questo comando creerà un file .jar nella cartella target/scala-2.12. A questo punto il programma è pronto per essere eseguito
+  <li>esecuzione del file .jar</li> l'esecuzione del programma avviene lanciando l'esecuzione java con input i seguenti parametri:
+  <ul>
+    <li>path del file .jar</li>
+    <li> path cartella di input del dataset</li>
+    <li>path cartella di output del dataset</li>
+    <li>numero threads</li> Settare "*" per numero massimo di threads messi a disposizione dalla macchina, sennò un numero a propria scelta
+    <li>classe entry points</li> In questo caso "Kmeans"
+  </ul>
+  </ol>
+  
+L'ultimo punto è equivalente sia per l'esecuzione in locale che in cloud. Nel caso del cloud, i path dovranno essere riferiti al file system dello storage del servizio cloud in questione (in questo caso Google Cloud Storage).
+
+Per l'esecuzione sul cloud occorre:
+<ol>
+  <li>
+    creare quindi un bucket che contenga i file di input e di output e il file jar
+  </li>
+    <li>
+    creare i cluster su cui si desidera testare l'esecuzione settandoli con numero arbitrario di master e nodi
+  </li>
+      <li>
+     crere il job dove si specifica cluster da usare, path del jar da eseguire, class entry point, input da terminale
+  </li>
+  <li>
+    Avviare l'esecuzione del cluster e del job e aspettare la fine dell'esecuzione, dopo la quale si può arrestare l'esecuzione del cluster e del job.
+  </li>
+</ol>
 
