@@ -27,7 +27,7 @@ I dataset utilizzati in questo progetto sono:
 </li>
 </ul>
 
-## Pre-processing dati e post processing risultati
+## Pre-processing dati e post processing-risultati
 I due dataset prima di passare in input al K-means hanno subito una fase di pre-processazione, consistente in normalizzazione e sostituzione dei dati mancanti sulle colonne con la mediana.
 
 I risultati dell'esecuzione del K-means sono in chunks, in quanto ogni thread produce il suo output. Per questo motivo c'è stata una fase di post processing dei risultati, che consiste nel loro parsing e conversione in csv.
