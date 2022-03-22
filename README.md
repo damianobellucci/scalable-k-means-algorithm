@@ -44,6 +44,7 @@ Requisiti:
 <ul>
   <li>Scala 2.12</li>
     <li>Spark 3.1.2</li>
+  <li>Python 3.8.2</li>
 </ul>
 
 
