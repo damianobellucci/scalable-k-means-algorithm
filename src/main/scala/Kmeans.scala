@@ -60,95 +60,52 @@ object Kmeans extends Serializable {
         .map(_.toDouble)
     })
 
-      (2 to numK).foreach(num_k => {
+    val results = (2 to numK).map(num_k => {
 
-        val t0 = System.nanoTime()
+      val t0 = System.nanoTime()
+      var centroids =((0 until num_k) zip sparkPoints.takeSample(false, num_k, seed = 42)).toArray
+      var finished = false
 
-        var centroids =
-          ((0 until num_k) zip
-            sparkPoints.takeSample(false, num_k, seed = 42)).
-            toArray
+      var pairs =
+        sparkPoints
+          .map(p => {
+            val closestCluster =  findClosest(p, centroids)
+            (closestCluster._1, p ,closestCluster._2)        //id closest cluster //point//distance cluster point
+          })
 
-        var finished = false
+      do {
 
-        var pairs =
+        pairs =
           sparkPoints
-            .map(p =>{
+            .map(p => {
               val closestCluster =  findClosest(p, centroids)
-              (
-                closestCluster._1 //id closest cluster
-                ,
-                p //point
-                ,
-                closestCluster._2 //distance cluster point
-              )
-            }
-            )
+              (closestCluster._1, p ,closestCluster._2)        //id closest cluster //point//distance cluster point
+            })
 
-        do {
-          //pairs = list(id_cluster,point)
-          pairs =
-            sparkPoints
-              .map(p =>{
-                val closestCluster =  findClosest(p, centroids)
-                (
-                  closestCluster._1 //id closest cluster
-                  ,
-                  p //point
-                  ,
-                  closestCluster._2 //distance cluster point
-                )
-              }
-              )
-
-          val newCentroids =
-            pairs
-              .map(pair=>{(pair._1,(pair._2,1.0))})  //id_cluster,point,peso
-              .reduceByKey(weightedMeanPoint)
-              .map(c => (c._1, c._2._1)).
-              collect()
-
-          if (meanDistance(centroids, newCentroids) < epsilon)
-            finished = true
-          else centroids = newCentroids
-
-          numIterations = numIterations + 1
-
-        } while (!finished)
-
-
-        //parallel computation for getting list of wcss for each cluster. list[(id_cluster,wcss)]
-
+        val newCentroids =
           pairs
-            .map(pair=>{
-              (
-                pair._1 //key of cluster to reduce by key then
-                ,
-                (pair._3,1.0) //distanza punto cluster precedentemente calcolata e peso punto nella somma finale
-              )})
-            .reduceByKey(weightedSum)
-            .map((el)=>{
-              (
-                1,
-                  (
-                el._2._1/ el._2._2 //wcss in a cluster
-                ,
-                1.0)
-                )
-            })
-            .
-            reduceByKey((x,y)=>{(x._1+y._1,x._2+y._2)})
-            .map(el=>{
-              (num_k
-                ,
-                el._2._1/el._2._2
-                ,
-                numIterations
-                ,
-                (System.nanoTime() - t0) / 1000000000
-              )
-            })
-            .saveAsTextFile(output_path+"/"+num_k)
-      })
+            .map(pair=>{(pair._1,(pair._2,1.0))})  //id_cluster,point,peso
+            .reduceByKey(weightedMeanPoint)
+            .map(c => (c._1, c._2._1))
+            .collect()
+
+        if (meanDistance(centroids, newCentroids) < epsilon)
+          finished = true
+        else centroids = newCentroids
+        numIterations = numIterations + 1
+
+      } while (!finished)
+
+      val wcssMean = pairs
+        .map(pair=>{(pair._1,(pair._3,1.0))}) //key of cluster to reduce by key then  //distanza punto cluster precedentemente calcolata e peso punto nella somma finale
+        .reduceByKey(weightedSum)
+        .map(el=>el._2._1/ el._2._2) //wcss in a cluster
+        .reduce(_+_)/num_k
+
+      (num_k,wcssMean,numIterations,(System.nanoTime() - t0) / 1000000000)
+    })
+
+    sc.parallelize(results).saveAsTextFile(output_path)
+
   }
 }
