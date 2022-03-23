@@ -60,10 +60,7 @@ object Kmeans extends Serializable {
         .map(_.toDouble)
     })
 
-    val tt0 = System.nanoTime()
-
-    val result =
-      (2 to numK).map(num_k => {
+      (2 to numK).foreach(num_k => {
 
         val t0 = System.nanoTime()
 
@@ -122,11 +119,9 @@ object Kmeans extends Serializable {
 
         //parallel computation for getting list of wcss for each cluster. list[(id_cluster,wcss)]
 
-        val wcss_list =
           pairs
             .map(pair=>{
               (
-
                 pair._1 //key of cluster to reduce by key then
                 ,
                 (pair._3,1.0) //distanza punto cluster precedentemente calcolata e peso punto nella somma finale
@@ -134,19 +129,26 @@ object Kmeans extends Serializable {
             .reduceByKey(weightedSum)
             .map((el)=>{
               (
-                el._1,
-                el._2._1/ el._2._2
+                1,
+                  (
+                el._2._1/ el._2._2 //wcss in a cluster
+                ,
+                1.0)
+                )
+            })
+            .
+            reduceByKey((x,y)=>{(x._1+y._1,x._2+y._2)})
+            .map(el=>{
+              (num_k
+                ,
+                el._2._1/el._2._2
+                ,
+                numIterations
+                ,
+                (System.nanoTime() - t0) / 1000000000
               )
-            }).collect()
-
-        //return (num_k, mean_wcss, time_execution)
-        (num_k, wcss_list.map(_._2).sum/num_k,numIterations,(System.nanoTime() - t0) / 1000000000)
-      }).toList
-
-    sc.parallelize(result).saveAsTextFile(output_path)
-
-    val t1 = ((System.nanoTime() - tt0) / 1000000000)
-
-    println(t1)
+            })
+            .saveAsTextFile(output_path+"/"+num_k)
+      })
   }
 }
