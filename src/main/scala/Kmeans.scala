@@ -1,21 +1,24 @@
 import java.io._
 import org.apache.spark.{SparkConf, SparkContext}
 
-import scala.collection.mutable.HashMap
-
 object Kmeans extends Serializable {
 
   val epsilon = 0.0001
-  val numK = 20
+  val numK = 3
   var numIterations = 0
 
   def distance(p1: Array[Double], p2: Array[Double]) =
     math.sqrt((p1 zip p2).map(e => e._1 - e._2).map(e => e * e).sum)
 
+
+  //return a tuple with the id of nearest cluster and distance between this and the point
   def findClosest(p: Array[Double],
-                  centroids: Array[(Int, Array[Double])]): Int =
-    centroids.map(c => (c._1, distance(c._2, p))).
-      minBy(_._2)._1
+                  centroids: Array[(Int, Array[Double])]) = {
+    centroids
+      .map(centroid=>{ (centroid._1, distance(centroid._2,p))})
+      .minBy(_._2)
+  }
+
 
   def weightedMean(x: Array[Double], n: Double, y: Array[Double], m: Double) =
     (x zip y).map(e => {
@@ -34,7 +37,6 @@ object Kmeans extends Serializable {
       sum) / c.length
   }
 
-  var hashMap = new HashMap[Int, Array[Double]]
 
   def weightedSum(p1: (Double, Double),
                   p2: (Double, Double)) = {
@@ -72,17 +74,39 @@ object Kmeans extends Serializable {
 
         var finished = false
 
-        var pairs = sparkPoints.map(p => (findClosest(p, centroids), p))
+        var pairs =
+          sparkPoints
+            .map(p =>{
+              val closestCluster =  findClosest(p, centroids)
+              (
+                closestCluster._1 //id closest cluster
+                ,
+                p //point
+                ,
+                closestCluster._2 //distance cluster point
+              )
+            }
+            )
 
         do {
           //pairs = list(id_cluster,point)
           pairs =
             sparkPoints
-              .map(p => (findClosest(p, centroids), p))
+              .map(p =>{
+                val closestCluster =  findClosest(p, centroids)
+                (
+                  closestCluster._1 //id closest cluster
+                  ,
+                  p //point
+                  ,
+                  closestCluster._2 //distance cluster point
+                )
+              }
+              )
 
           val newCentroids =
             pairs
-              .map(pair=>{(pair._1,(pair._2,1.0))})
+              .map(pair=>{(pair._1,(pair._2,1.0))})  //id_cluster,point,peso
               .reduceByKey(weightedMeanPoint)
               .map(c => (c._1, c._2._1)).
               collect()
@@ -95,21 +119,17 @@ object Kmeans extends Serializable {
 
         } while (!finished)
 
-        centroids.map(el => {
-          hashMap.put(el._1, el._2)
-        })
 
         //parallel computation for getting list of wcss for each cluster. list[(id_cluster,wcss)]
 
         val wcss_list =
           pairs
             .map(pair=>{
-              val centroid = hashMap.getOrElse(pair._1, 0).asInstanceOf[Array[Double]] //lo zero in get or else viene messo per unwrappare l'option
               (
-                //key of cluster to reduce by key then
-                pair._1
+
+                pair._1 //key of cluster to reduce by key then
                 ,
-                (distance(centroid,pair._2),1.0)
+                (pair._3,1.0) //distanza punto cluster precedentemente calcolata e peso punto nella somma finale
               )})
             .reduceByKey(weightedSum)
             .map((el)=>{
