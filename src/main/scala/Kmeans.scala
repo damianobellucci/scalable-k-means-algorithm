@@ -66,6 +66,7 @@ object Kmeans extends Serializable {
       var centroids =((0 until num_k) zip sparkPoints.takeSample(false, num_k, seed = 42)).toArray
       var finished = false
 
+      //to fix
       var pairs =
         sparkPoints
           .map(p => {
@@ -92,6 +93,7 @@ object Kmeans extends Serializable {
         if (meanDistance(centroids, newCentroids) < epsilon)
           finished = true
         else centroids = newCentroids
+
         numIterations = numIterations + 1
 
       } while (!finished)
