@@ -1,7 +1,7 @@
 # Scalable K-means algorithm 
 
 ## Introduzione
-L'obiettivo di questo progetto è studiare è studiare l'efficacia dell'algoritmo K-means implementato per essere eseguito su risorse scalabili, per problemi di transport mode detection e human activity recognition, su dataset fatti da dati provenienti da sensori di smartphone. 
+L'obiettivo di questo progetto è eseguire uno studio di data analysis per studiare l'efficacia dell'algoritmo K-means, implementato per essere eseguito su risorse scalabili, per problemi di transport mode detection e human activity recognition, su dataset fatti da dati provenienti da sensori di smartphone. 
 In particolare, si è cercato di capire se a partire da questi dati è possibile fare clusterizzazione per individuare i cluster di dati relativi ai tipi di trasporto oppure alle attività umane.
 Possibili risvolti di questo studio possono essere il riconoscimento di tipi diversi modalità di trasporto/attività umane a partire da dati di sensori, senza però conoscerne la denominazione. 
 
