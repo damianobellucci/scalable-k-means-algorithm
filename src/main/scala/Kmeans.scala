@@ -1,3 +1,5 @@
+import org.apache.spark.rdd.RDD
+
 import java.io._
 import org.apache.spark.{SparkConf, SparkContext}
 
@@ -66,13 +68,7 @@ object Kmeans extends Serializable {
       var centroids =((0 until num_k) zip sparkPoints.takeSample(false, num_k, seed = 42)).toArray
       var finished = false
 
-      //to fix
-      var pairs =
-        sparkPoints
-          .map(p => {
-            val closestCluster =  findClosest(p, centroids)
-            (closestCluster._1, p ,closestCluster._2)        //id closest cluster //point//distance cluster point
-          })
+      var pairs = sc.emptyRDD[(Int,Array[Double],Double)]
 
       do {
 
