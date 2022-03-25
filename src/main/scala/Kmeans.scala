@@ -6,7 +6,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 object Kmeans extends Serializable {
 
   val epsilon = 0.0001
-  val numK = 3
+  var numK = 3
   var numIterations = 0
 
   def distance(p1: Array[Double], p2: Array[Double]) =
@@ -40,16 +40,12 @@ object Kmeans extends Serializable {
   }
 
 
-  def weightedSum(p1: (Double, Double),
-                  p2: (Double, Double)) = {
-    (p1._1+p2._1,p1._2+p2._2)
-  }
-
   def main(args: Array[String]): Unit = {
 
     val dataset_path = args(0)
     val output_path = args(1)
     val n_threads = args(2)
+    numK = args(3).toInt
 
     val conf = new SparkConf().setAppName("KMeans").setMaster("local["+n_threads+"]")
     val sc = new SparkContext(conf)
@@ -94,13 +90,14 @@ object Kmeans extends Serializable {
 
       } while (!finished)
 
-      val wcssMean = pairs
-        .map(pair=>{(pair._1,(pair._3,1.0))}) //key of cluster to reduce by key then  //distanza punto cluster precedentemente calcolata e peso punto nella somma finale
-        .reduceByKey(weightedSum)
-        .map(el=>el._2._1/ el._2._2) //wcss in a cluster
+      //Average distance from centroid
+      val avgDist = pairs
+        .map(pair=>{(pair._1,(pair._3,1.0))})
+        .reduceByKey((p1,p2)=>(p1._1+p2._1,p1._2+p2._2))
+        .map(el=>el._2._1/ el._2._2)
         .reduce(_+_)/num_k
 
-      (num_k,wcssMean,numIterations,(System.nanoTime() - t0) / 1000000000)
+      (num_k,avgDist,numIterations,(System.nanoTime() - t0) / 1000000000)
     })
 
     sc.parallelize(results).saveAsTextFile(output_path)
