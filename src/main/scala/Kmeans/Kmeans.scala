@@ -1,8 +1,10 @@
-import org.apache.spark.rdd.RDD
-import org.apache.spark.{ SparkContext}
-import FunctionUtils.{meanDistance,weightedMeanPoint,findClosest}
+package Kmeans
 
-object Kmeans extends  Serializable {
+import Utils.UtilsFunctions.{findClosest, meanDistance, weightedMeanPoint}
+import org.apache.spark.SparkContext
+import org.apache.spark.rdd.RDD
+
+object Kmeans extends Serializable {
 
   var numIterations = 0
 
@@ -38,6 +40,6 @@ object Kmeans extends  Serializable {
 
     } while (!finished)
 
-    (pairs,centroids)
+    (pairs, centroids,numIterations)
   }
 }

@@ -1,4 +1,6 @@
-object FunctionUtils {
+package Utils
+
+object UtilsFunctions {
 
   def distance(p1: Array[Double], p2: Array[Double]) =
     math.sqrt((p1 zip p2).map(e => e._1 - e._2).map(e => e * e).sum)
@@ -7,7 +9,9 @@ object FunctionUtils {
   def findClosest(p: Array[Double],
                   centroids: Array[(Int, Array[Double])]) = {
     centroids
-      .map(centroid=>{ (centroid._1, distance(centroid._2,p))})
+      .map(centroid => {
+        (centroid._1, distance(centroid._2, p))
+      })
       .minBy(_._2)._1
   }
 
