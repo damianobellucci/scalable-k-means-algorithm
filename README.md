@@ -14,9 +14,9 @@ Il linguaggio di programmazione utilizzato è Scala, un linguaggio tipato static
 ## Punti chiave del progetto
 <ul>
   <li> Implementazione algoritmo K-means per dataset con n-features</li>
-  <li> Implementazione algoritmo per il calcolo della WCSS, che è una metrica per valutare la qualità di un cluster</li>
-  <li> Raccolta dati per valutare l'efficacia della clusterizzazione tramite elbow method </li>
-  <li> Valutazione delle performance dell'esecuzione del codice in termini di tempo su diverse configurazioni di risorse, dal locale a cluster nel cloud con cluster con 1,2,4 nodi.
+  <li> Implementazione algoritmo per il calcolo degli indici WCSS, mean WCSS, Calinski Harabasz, che è una metrica per valutare la qualità di un cluster</li>
+  <li> Raccolta dati per valutare l'efficacia della clusterizzazione e discussione dei risultati </li>
+  <li> Valutazione delle performance dell'esecuzione dell'algoritmo in termini di tempo su diverse configurazioni di risorse, dal locale a cluster nel cloud con cluster con 1,2,4 nodi.
 </ul>
 
 ## Dataset utilizzati
@@ -61,6 +61,7 @@ L'esecuzione del progetto si divide in diversi step:
     <li>path cartella di output del dataset</li>
     <li>numero threads</li> Settare "*" per numero massimo di threads messi a disposizione dalla macchina, sennò un numero a propria scelta
     <li>numero di clusters</li> Numero di cluster per cui si vuole fare lo studio dell'elbow method. Ad esempio con 5 il k-means verrà eseguito per 5 volte con numero di clusters da 2,3,4,5.
+    <li>epsilon</li> coefficiente di soglia variazione dei cluster
     <li>classe entry points</li> In questo caso "Kmeans"
   </ul>
   </ol>
