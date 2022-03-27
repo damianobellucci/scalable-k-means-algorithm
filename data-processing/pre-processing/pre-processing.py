@@ -18,6 +18,6 @@ def manage_df(df):
     print(df)
     return df
 
-for X in zip ([tmd_load_dataset(),har_load_dataset()],[0,1]):
+for X in zip ([tmd_load_dataset(),har_load_dataset()],[1,2]):
     df = manage_df(X[0])
     df.to_csv("./output/dataset"+str(X[1])+".csv")

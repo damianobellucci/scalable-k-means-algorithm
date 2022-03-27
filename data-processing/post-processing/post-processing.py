@@ -6,7 +6,7 @@ import numpy as np
 path_input = "./input"
 path_output = "./output"
 
-columns = ["#clusters","wcss","time_wcss","wbss","time_wbss","calinski","time_calinski","#iterations","time_clusterization"]
+columns = ["#clusters","wcss","time_wcss","mean_wcss","time_mean_wcss","calinski","time_calinski","#iterations","time_clusterization"]
 
 files = glob.glob(path_input+"/*")
 

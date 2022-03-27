@@ -25,6 +25,6 @@ object CalinskiHarabasz extends IndexClustering {
 
     val num_k = info.hashCenters.size
 
-    (ssb / WCSS.run(info)) / ((pairs.count() - num_k) / (num_k - 1))
+    ssb * (pairs.count()-num_k)/(WCSS.run(info)* (num_k - 1))
   }
 }

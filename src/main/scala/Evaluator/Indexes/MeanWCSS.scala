@@ -18,7 +18,7 @@ object MeanWCSS extends IndexClustering {
       .map(el => {
         el._2._1 / el._2._2
       }) //mean variance of cluster
-      .sum()
+      .sum()/info.hashCenters.size
 
   }
 
