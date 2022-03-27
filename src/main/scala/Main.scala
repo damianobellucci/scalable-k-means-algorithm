@@ -1,10 +1,9 @@
 import Evaluator.{Evaluator, InfoClusterization}
 import Kmeans.Kmeans
-import _root_.Evaluator.Indexes.{CalinskiHarabasz, WBSS, WCSS}
+import _root_.Evaluator.Indexes.{CalinskiHarabasz, MeanWCSS, WCSS}
 import org.apache.spark.{SparkConf, SparkContext}
-
 import java.io.Serializable
-
+import Utils.Benchmark
 
 object Main extends Serializable {
 
@@ -29,14 +28,22 @@ object Main extends Serializable {
 
     val aggregatedResult = (2 to numK).map(num_k=>{
 
-      val t0 = System.nanoTime()
+      val result = Benchmark time Kmeans.run(sparkPoints, num_k, epsilon)
 
-      val result = Kmeans.run(sc, sparkPoints, num_k, epsilon)
+      val evaluator = new Evaluator(new InfoClusterization(result._1._1,result._1._2))
+      val indexes = List(WCSS,MeanWCSS,CalinskiHarabasz).map(index=>{Benchmark time (evaluator start index)})
 
-      val evaluator = new Evaluator(new InfoClusterization(result._1,result._2))
-      val indexes = List(WCSS,WBSS,CalinskiHarabasz).map(index=>{evaluator start index})
-
-      (num_k,indexes(0),indexes(1),indexes(2),result._3,(System.nanoTime()-t0)/1000000000)
+      (
+        num_k,
+        indexes(0)._1,
+        indexes(0)._2,
+        indexes(1)._1,
+        indexes(1)._2,
+        indexes(2)._1,
+        indexes(2)._2,
+        result._1._3, //iterations
+        result._2 //time for clusterization
+      )
     })
 
     sc

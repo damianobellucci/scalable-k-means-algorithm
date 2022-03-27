@@ -8,19 +8,18 @@ object Kmeans extends Serializable {
 
   var numIterations = 0
 
-  def run(sc: SparkContext, sparkPoints: RDD[Array[Double]], num_k: Int, epsilon: Double) = {
+  def run(sparkPoints: RDD[Array[Double]], num_k: Int, epsilon: Double) = {
 
     var centroids = ((0 until num_k) zip sparkPoints.takeSample(false, num_k, seed = 42)).toArray
     var finished = false
 
-    var pairs = sc.emptyRDD[(Int, Array[Double])]
+    var pairs =
+      sparkPoints
+      .map(p => {
+        (findClosest(p, centroids), p) //id closest cluster //point
+      })
 
     do {
-      pairs =
-        sparkPoints
-          .map(p => {
-            (findClosest(p, centroids), p) //id closest cluster //point
-          })
 
       val newCentroids =
         pairs
@@ -33,12 +32,22 @@ object Kmeans extends Serializable {
 
       if (meanDistance(centroids, newCentroids) < epsilon) {
         finished = true
-
-      } else centroids = newCentroids
+        //salvo le coppie centroide punto
+      } else
+        {
+          centroids = newCentroids
+          pairs =
+            sparkPoints
+              .map(p => {
+                (findClosest(p, centroids), p) //id closest cluster //point
+              })
+        }
 
       numIterations = numIterations + 1
 
     } while (!finished)
+
+    //couples id_cluster,point for final assignment of points to cluster
 
     (pairs, centroids,numIterations)
   }

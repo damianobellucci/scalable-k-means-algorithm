@@ -13,13 +13,13 @@ object CalinskiHarabasz extends IndexClustering {
         .map(pair => {
           pair._2
         })
-        .reduce((x, y) => weightedMean(x, 1, y, 1))
+        .reduce((x, y) => weightedMean(x, 1.0, y, 1.0))
 
     val ssb =
       pairs
         .countByKey() //id_cluster,samples_in_cluster
         .map(cluster => {
-          distance(info.hashCenters(cluster._1), mainCentroid) * cluster._2
+          math.pow(distance(info.hashCenters(cluster._1), mainCentroid),2) * cluster._2
         })
         .sum
 
