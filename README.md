@@ -62,7 +62,7 @@ L'esecuzione del progetto si divide in diversi step:
     <li>numero threads</li> Settare "*" per numero massimo di threads messi a disposizione dalla macchina, sennò un numero a propria scelta
     <li>numero di clusters</li> Numero di cluster per cui si vuole fare lo studio dell'elbow method. Ad esempio con 5 il k-means verrà eseguito per 5 volte con numero di clusters da 2,3,4,5.
     <li>epsilon</li> coefficiente di soglia variazione dei cluster
-    <li>classe entry points</li> In questo caso "Kmeans"
+    <li>classe entry points</li> In questo caso "Main"
   </ul>
   </ol>
   
