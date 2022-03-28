@@ -14,16 +14,16 @@ Il linguaggio di programmazione utilizzato è Scala, un linguaggio tipato static
 ## Punti chiave del progetto
 <ul>
   <li> Implementazione algoritmo K-means per dataset con n-features</li>
-  <li> Implementazione algoritmo per il calcolo della WCSS, che è una metrica per valutare la qualità di un cluster</li>
-  <li> Raccolta dati per valutare l'efficacia della clusterizzazione tramite elbow method </li>
-  <li> Valutazione delle performance dell'esecuzione del codice in termini di tempo su diverse configurazioni di risorse, dal locale a cluster nel cloud con cluster con 1,2,4 nodi.
+  <li> Implementazione algoritmo per il calcolo degli indici WCSS, mean WCSS, Calinski Harabasz, che è una metrica per valutare la qualità di un cluster</li>
+  <li> Raccolta dati per valutare l'efficacia della clusterizzazione e discussione dei risultati </li>
+  <li> Valutazione delle performance dell'esecuzione dell'algoritmo in termini di tempo su diverse configurazioni di risorse, dal locale a cluster nel cloud con cluster con 1,2,4 nodi.
 </ul>
 
 ## Dataset utilizzati
 I dataset utilizzati in questo progetto sono:
 <ul>
-  <li><a href="http://cs.unibo.it/projects/us-tm2017/download.html">Transport mode detection</a>: questo dataset presenta circa 6000 samples con 64 features, con riferimento a 5 modalità di trasporto (Still, Car, Walking, Bus, Train). Il dataset in questione tra quelli nel link è il dataset bilanciato con finestra temporale di 5 secondi.
-  <li><a href="https://www.kaggle.com/datasets/uciml/human-activity-recognition-with-smartphones">Human activity recognition</a>: questo dataset presenta samples con 561 features, con riferimento a 6 attività umane (walking, walking upstairs, walking downstairs, sitting, standing, laying).
+  <li><a href="http://cs.unibo.it/projects/us-tm2017/download.html">Transport mode detection</a>: questo dataset presenta circa 5894 samples con 64 features, con riferimento a 5 modalità di trasporto (Still, Car, Walking, Bus, Train). Il dataset in questione tra quelli nel link è il dataset bilanciato con finestra temporale di 5 secondi.
+  <li><a href="https://www.kaggle.com/datasets/uciml/human-activity-recognition-with-smartphones">Human activity recognition</a>: questo dataset presenta 7353 samples con 561 features, con riferimento a 6 attività umane (walking, walking upstairs, walking downstairs, sitting, standing, laying).
 </li>
 </ul>
 
@@ -36,7 +36,14 @@ Il codice relativo al pre-processing dei dati e al post-processing dei risultati
 
 ## Riassunto dei risultati
 
+I risultati ottenuti per la clusterizzazione nei due datasets si discostano da quella che è la situazione ideale (numero di clusters individuati uguale a quello reale).
 
+Infatti, per D1 (transport mode detection dataset) il numero dei cluster reale è 5, mentre tramite l'algoritmo k-means implementato, con tecnica dell'elbow method con wcss è stato riscontrato che è 9, mentre con indice Calinski-Harabasz è 3 e con mean wcss è 8. Per quanto riguarda il dataset D2 (human activity recognition dataset) invece, anche in questo caso si è avuta una discordanza tra i cluster reali, che sono 6, mentre quelli trovati tramite elbow method con i vari indici: 8 per wcss, 2 per Calisnki-Harabasz e 9 per la mean wcss. I risultati migliori quindi si sono ottenuti tramite l'indice wcss.
+I risultati ottenuti in questo studio si discostano poco dal benchmark effettuato tramite algoritmo k-means della libreria scikit-learn. Quest'ultimo infatti tramite tecnica dell'elbow method individua il numero di clusters ottimo per D1 a 8 e 6 per D2.
+
+I risultati ottenuti suggeriscono quindi che con elbow method tramite indice wcss è possibile fare clusterizzazione approssimativa su dati relativi alla transport mode detection e human activity recognition provenienti da sensori di smartphone. Uno sviluppo futuro possibile potrebbe essere quello di applicare preliminarmente algoritmi per eliminare quei samples nel dataset che sono frutto del rumore dei sensori, ad esempio attraverso l'algoritmo DBSCAN, per escluderli cercando così di andare a migliorare poi risultati della clusterizzazione.
+
+Per quanto riguarda i tempi di esecuzione, questi sono stati contro le aspettative. Infatti le prestazioni migliori sono state ottenute in locale. Su questo bisogna indagare sulla potenza delle macchine nel cloud rispetto alla risorsa di calcolo locale. Ulteriori test andrebbero fatti con cluster di dimensione più grande di quella presa in considerazione in questo studio. Inoltre, una conclusione potrebbe essere quella che i dataset non sono sufficientemente grandi da poter presupporre la diminuizione dei tempi di esecuzione su un cluster rispetto ad una esecuzione su macchina locale, tenendo in considerazione che per dataset piccoli non conviene una esecuzione su cluster, in quanto l'overhead aggiunto dalla latenza di rete porta l'esecuzione locale ad essere più veloce.
 
 ## Esecuzione
 
@@ -61,7 +68,8 @@ L'esecuzione del progetto si divide in diversi step:
     <li>path cartella di output del dataset</li>
     <li>numero threads</li> Settare "*" per numero massimo di threads messi a disposizione dalla macchina, sennò un numero a propria scelta
     <li>numero di clusters</li> Numero di cluster per cui si vuole fare lo studio dell'elbow method. Ad esempio con 5 il k-means verrà eseguito per 5 volte con numero di clusters da 2,3,4,5.
-    <li>classe entry points</li> In questo caso "Kmeans"
+    <li>epsilon</li> coefficiente di soglia variazione dei cluster
+    <li>classe entry points</li> In questo caso "Main"
   </ul>
   </ol>
   
