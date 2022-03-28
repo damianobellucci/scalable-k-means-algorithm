@@ -14,9 +14,9 @@ Il linguaggio di programmazione utilizzato è Scala, un linguaggio tipato static
 ## Punti chiave del progetto
 <ul>
   <li> Implementazione algoritmo K-means per dataset con n-features</li>
-  <li> Implementazione algoritmo per il calcolo degli indici WCSS, mean WCSS, Calinski Harabasz, che è una metrica per valutare la qualità di un cluster</li>
-  <li> Raccolta dati per valutare l'efficacia della clusterizzazione e discussione dei risultati </li>
-  <li> Valutazione delle performance dell'esecuzione dell'algoritmo in termini di tempo su diverse configurazioni di risorse, dal locale a cluster nel cloud con cluster con 1,2,4 nodi.
+  <li> Implementazione calcolo degli indici WCSS, Calinski Harabasz e mean WCSS, che sono indici per valutare la qualità della clusterizzazione</li>
+  <li> Raccolta dati ottenuti con algoritmo k-means implementato, usando elbow method per valutare l'efficacia della clusterizzazione e relativa discussione dei risultati, per capire se si può clusterizzare efficacemente su datasets con dati relativi ai problemi di transport mode detection e human activity recognition provenienti da sensori di smartphone. I risultati ottenuti sono stati confrontati con risultati ottenuti sugli stessi dataset con algoritmo di clusterizzazione della libreria scikit-learn, per avere un benchmark dei risultati. </li>
+  <li> Valutazione delle performance dell'esecuzione dell'algoritmo k-means implementato in termini di tempo, su diverse configurazioni di risorse, dal locale con 1 e 4 threads a cluster nel cloud con 2 e 4 nodi e relativa discussione dei dati ottenuti.
 </ul>
 
 ## Dataset utilizzati
