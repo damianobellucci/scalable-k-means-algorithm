@@ -22,7 +22,7 @@ Il linguaggio di programmazione utilizzato è Scala, un linguaggio tipato static
 ## Dataset utilizzati
 I dataset utilizzati in questo progetto sono:
 <ul>
-  <li><a href="http://cs.unibo.it/projects/us-tm2017/download.html">Transport mode detection</a>: questo dataset presenta circa 5894 samples con 64 features, con riferimento a 5 modalità di trasporto (Still, Car, Walking, Bus, Train). Il dataset in questione tra quelli nel link è il dataset bilanciato con finestra temporale di 5 secondi.
+  <li><a href="http://cs.unibo.it/projects/us-tm2017/download.html">Transport mode detection</a>: questo dataset presenta 5894 samples con 64 features, con riferimento a 5 modalità di trasporto (Still, Car, Walking, Bus, Train). Il dataset in questione tra quelli nel link è il dataset bilanciato con finestra temporale di 5 secondi.
   <li><a href="https://www.kaggle.com/datasets/uciml/human-activity-recognition-with-smartphones">Human activity recognition</a>: questo dataset presenta 7353 samples con 561 features, con riferimento a 6 attività umane (walking, walking upstairs, walking downstairs, sitting, standing, laying).
 </li>
 </ul>
