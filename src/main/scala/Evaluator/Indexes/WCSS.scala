@@ -6,13 +6,11 @@ import Utils.UtilsFunctions.distance
 object WCSS extends IndexClustering {
   override def run(info: InfoClusterization): Double = {
     info.pairs
-      .groupBy(_._1) //raggruppo punti per cluster
-      .map(cluster => { //per ogni punto calcolo norma l2 con suo centroide
-        cluster._2.map(el => {
-          math.pow(distance(el._2, info.hashCenters(el._1)),2)
-        })
-          .sum //risoluzione prima sommatoria, cioè quella intraclasse
+      .map(pair=>{
+        math.pow(distance(pair._2, info.hashCenters(pair._1)),2)
       })
-      .sum //risoluzione sommatoria intraclasse
+      .sum
   }
 }
+
+

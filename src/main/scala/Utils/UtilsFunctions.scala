@@ -3,9 +3,8 @@ package Utils
 object UtilsFunctions {
 
   def distance(p1: Array[Double], p2: Array[Double]) =
-    math.sqrt((p1 zip p2).map(e => e._1 - e._2).map(e => e * e).sum)
+    math.sqrt((p1 zip p2).map(e =>math.pow(e._1 - e._2,2)).sum)
 
-  //return a tuple with the id of nearest cluster and distance between this and the point
   def findClosest(p: Array[Double],
                   centroids: Array[(Int, Array[Double])]) = {
     centroids
@@ -27,9 +26,12 @@ object UtilsFunctions {
 
   def meanDistance(c: Array[(Int, Array[Double])],
                    newc: Array[(Int, Array[Double])]) = {
-    ((c zip newc).
-      map(c => distance(c._1._2, c._2._2)).
-      sum) / c.length
+    (c zip newc)
+      .map(c => distance(c._1._2, c._2._2))
+      .sum/ c.length
   }
-
 }
+
+
+
+

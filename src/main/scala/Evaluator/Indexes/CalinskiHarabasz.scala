@@ -28,3 +28,6 @@ object CalinskiHarabasz extends IndexClustering {
     ssb * (pairs.count()-num_k)/(WCSS.run(info)* (num_k - 1))
   }
 }
+
+
+

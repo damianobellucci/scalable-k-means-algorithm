@@ -5,3 +5,5 @@ class Evaluator(info:InfoClusterization) extends Serializable {
     f.run(info)
   }
 }
+
+

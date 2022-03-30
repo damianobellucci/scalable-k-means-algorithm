@@ -18,37 +18,34 @@ object Kmeans extends Serializable {
       .map(p => {
         (findClosest(p, centroids), p) //id closest cluster //point
       })
-
     do {
-
       val newCentroids =
         pairs
           .map(pair => {
             (pair._1, (pair._2, 1.0))
-          }) //id_cluster,(point,peso)
+          })
           .reduceByKey(weightedMeanPoint)
           .map(c => (c._1, c._2._1))
           .collect()
 
       if (meanDistance(centroids, newCentroids) < epsilon) {
         finished = true
-        //salvo le coppie centroide punto
+
       } else
         {
           centroids = newCentroids
           pairs =
             sparkPoints
               .map(p => {
-                (findClosest(p, centroids), p) //id closest cluster //point
+                (findClosest(p, centroids), p) //id closest cluster,point
               })
         }
-
       numIterations = numIterations + 1
-
     } while (!finished)
-
     //couples id_cluster,point for final assignment of points to cluster
-
     (pairs, centroids,numIterations)
   }
 }
+
+
+
